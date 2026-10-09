@@ -82,3 +82,5 @@ Lint flagged stripped hash variable; explicit discard fixed it and lint rerun pa
 34. Monthly category budget schema with owner/category/month uniqueness and validated integer-cent endpoints migrated. Actuals query confirmed reviewed lines only. Migration, type checks and lint passed.
 
 35. Monthly category budget editing, actuals, progress and overspend states connected to API. Frontend build and lint passed.
+
+36. Confirmed-only monthly analytics by local receipt date and integer-cent sums implemented. Category/merchant aggregates, separate tax and unallocated adjustments included. Month-boundary/isolation test, type checks and lint passed.
