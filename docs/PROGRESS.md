@@ -58,3 +58,5 @@ Lint flagged stripped hash variable; explicit discard fixed it and lint rerun pa
 22. Review persistence and atomic idempotent confirmation implemented; original images/OCR suggestions removed after confirmation unless retained. Test caught nullable database fields conflicting with validation; null normalization fixed. Confirmation test, type checks and lint passed.
 
 23. Exact original-file hash and cautious merchant/date/total duplicate warnings implemented, with explicit acknowledgement before confirmation. No silent merge/deletion. Duplicate unit test, type checks and lint passed.
+
+24. Manual entry, draft persistence, private deletion and failed OCR retry (max 3 attempts) completed. Build caught Express DELETE parameter union; normalized parameter fixed and both builds passed. Lint and 10 tests passed. Receipt workflow checkpoint implemented; browser proof remains milestone 46.
