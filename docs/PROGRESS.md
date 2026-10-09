@@ -106,3 +106,5 @@ Lint flagged stripped hash variable; explicit discard fixed it and lint rerun pa
 46. Chromium E2E passed (1 test, 10.3s) covering registration/manual correction/confirmation/dashboard and actual local Tesseract review/logout. Real fictional-data screenshots captured. Added managed-server configuration with separate e2e SQLite database for clean runs; type checks and lint passed.
 
 47. GitHub Actions installs dependencies, migrates SQLite, runs lint/type checks/unit+integration+React tests/builds and Chromium E2E with artifact capture. Local equivalent quality gate passed: 17 test files, 21 tests, both builds. Hosted Actions run not yet demonstrated.
+
+48. Architecture, security/privacy/retention decisions, monetary/tax/quantity rules, actual endpoint contracts and evidence-based interview notes documented. Documentation checked against implemented routes; lint passed.

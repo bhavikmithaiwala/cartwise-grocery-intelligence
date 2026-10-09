@@ -1,5 +1,7 @@
 # CartWise — Interview study notes and questions
 
+Implemented evidence: see `docs/ARCHITECTURE.md`, `docs/API.md`, `backend/src/privacy.test.ts`, `backend/src/review.test.ts`, `backend/src/money.test.ts` and `e2e/workflow.spec.ts`. Actual local OCR and Chromium workflow have passed; no accuracy benchmark, deployment or hosted CI success is claimed. Confirmed receipts are immutable and correction requires delete/re-entry. Merchants use reviewed receipt labels; categories are a standard catalog rather than separate tables. The remaining questions below are study prompts.
+
 **Use these as prompts to learn the code you actually implement, not as claims about features that do not yet exist.** After building each phase, replace example wording with evidence from your actual files, tests, and demo.
 
 ## 30-second explanation
