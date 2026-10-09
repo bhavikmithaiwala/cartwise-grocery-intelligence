@@ -15,3 +15,5 @@ Node 22.13.1 and npm 10.9.2 available. No application tests exist yet.
 Roadmap milestones 2–50. No application features claimed complete. No push performed.
 
 2. React/TypeScript/Vite frontend scaffold: production build passed (Vite 8.3.4).
+
+3. Express API health endpoint implemented. Workspace type checks and health integration test passed (1 test).
