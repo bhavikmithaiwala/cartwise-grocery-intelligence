@@ -68,3 +68,5 @@ Lint flagged stripped hash variable; explicit discard fixed it and lint rerun pa
 27. Owner-scoped canonical product model/API and reviewed line mapping persistence added. No automatic fuzzy mapping. Regression test caught nullable product field; normalized and rerun passed. Migration, type checks and lint passed.
 
 28. Product selection/creation and package-size controls added to review. Mapping is always explicit; unmapped lines excluded from price intelligence. Frontend build and lint passed.
+
+29. Decimal.js normalizes kg/g and L/ml exactly, includes package counts and separates mass/volume/each. Unit prices rounded half-up to 6 decimal cents per base unit; stored money remains integer cents. Unit tests, type checks and lint passed.
