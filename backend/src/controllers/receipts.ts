@@ -6,6 +6,8 @@ import { requireUser, ownerWhere } from '../middleware/owner.js';
 import { HttpError } from '../errors.js';
 import { storeImage, readImage, deleteImage, MAX_BYTES } from '../services/images.js';
 import { enqueueOcr } from '../services/ocr.js';
+import { reviewSchema } from '../domain/money.js';
+import { saveReview, confirmReceipt } from '../services/review.js';
 export const receipts = Router();
 receipts.use(requireUser);
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: MAX_BYTES, files: 1, fields: 0 } });
@@ -41,4 +43,17 @@ receipts.get('/:id/image', async (req, res) => {
   const receipt = await ownedReceipt(req.userId, req.params.id);
   if (!receipt.imagePath) throw new HttpError(404, 'NOT_FOUND', 'Original image is no longer retained.');
   res.set('Cache-Control', 'private, no-store').type('png').send(await readImage(receipt.imagePath));
+});
+receipts.patch('/:id/review', async (req, res) => {
+  await saveReview(req.userId, req.params.id, reviewSchema.parse(req.body));
+  res.json(publicReceipt(await ownedReceipt(req.userId, req.params.id)));
+});
+receipts.post('/:id/confirm', async (req, res) => {
+  const receipt = await confirmReceipt(req.userId, req.params.id);
+  const user = await db.user.findUniqueOrThrow({ where: { id: req.userId } });
+  if (!user.retainImages && receipt.imagePath) {
+    await deleteImage(receipt.imagePath);
+    await db.receipt.update({ where: { id: receipt.id }, data: { imagePath: null, suggestions: '{}' } });
+  }
+  res.json(publicReceipt(await ownedReceipt(req.userId, req.params.id)));
 });
