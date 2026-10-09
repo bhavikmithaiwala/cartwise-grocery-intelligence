@@ -1,0 +1,13 @@
+{
+  "name": "cartwise", "private": true, "version": "1.0.0",
+  "workspaces": ["frontend", "backend"],
+  "scripts": {
+    "dev": "concurrently -n api,web \"npm run dev -w backend\" \"npm run dev -w frontend\"",
+    "build": "npm run build --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "lint": "eslint frontend/src backend/src",
+    "test": "vitest run",
+    "db:migrate": "npm run db:migrate -w backend",
+    "db:seed": "npm run db:seed -w backend"
+  }
+}
