@@ -94,3 +94,5 @@ Lint flagged stripped hash variable; explicit discard fixed it and lint rerun pa
 40. Safe confirmed CSV export with formula neutralization plus account JSON export, password-verified deletion and retention settings completed. Settings were required in specification but absent from numbered roadmap; included with data management/export milestone. CSV test, type checks and lint passed.
 
 41. Expanded money/quantity normalization tests cover overflow, tiny decimals, invalid precision, half-up rounding and incomplete packages. 4 targeted tests and lint passed.
+
+42. Discounted/taxed, malformed/blurry and unit-mismatch synthetic text/image fixtures added. Parser correction scenarios pass (2 tests), lint passes. Restricted shell tsx generation failed OS-user lookup; elevated rerun generated fixtures successfully.
