@@ -102,3 +102,5 @@ Lint flagged stripped hash variable; explicit discard fixed it and lint rerun pa
 44. Full two-account API lifecycle verifies isolated writes/reporting/products/budgets/exports, account deletion cascade and password checks. Oversized decoded image test added. 2 targeted integration/security tests, lint and type checks passed.
 
 45. React interaction tests prove accessible sign-in error behavior, manual correction and integer-cent form submission. Initial jsdom run failed due backend node:sqlite setup; separate Vitest frontend/backend projects resolved. 2 React tests, lint and type checks passed.
+
+46. Chromium E2E passed (1 test, 10.3s) covering registration/manual correction/confirmation/dashboard and actual local Tesseract review/logout. Real fictional-data screenshots captured. Added managed-server configuration with separate e2e SQLite database for clean runs; type checks and lint passed.

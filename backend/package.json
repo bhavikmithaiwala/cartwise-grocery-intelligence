@@ -29,6 +29,7 @@
     "build": "tsc",
     "typecheck": "tsc --noEmit",
     "db:migrate": "node scripts/init-db.cjs && prisma migrate deploy && prisma generate",
-    "db:generate": "prisma generate"
+    "db:generate": "prisma generate",
+    "test:ocr": "tsx scripts/ocr-smoke.ts"
   }
 }

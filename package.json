@@ -13,7 +13,9 @@
     "lint": "eslint frontend/src backend/src",
     "test": "vitest run",
     "db:migrate": "npm run db:migrate -w backend",
-    "db:seed": "npm run db:seed -w backend"
+    "db:seed": "npm run db:seed -w backend",
+    "test:e2e": "playwright test",
+    "test:ocr": "npm run test:ocr -w backend"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
