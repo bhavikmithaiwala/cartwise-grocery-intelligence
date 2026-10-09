@@ -1,6 +1,11 @@
 {
-  "name": "cartwise", "private": true, "version": "1.0.0",
-  "workspaces": ["frontend", "backend"],
+  "name": "cartwise",
+  "private": true,
+  "version": "1.0.0",
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
   "scripts": {
     "dev": "concurrently -n api,web \"npm run dev -w backend\" \"npm run dev -w frontend\"",
     "build": "npm run build --workspaces --if-present",
@@ -9,5 +14,8 @@
     "test": "vitest run",
     "db:migrate": "npm run db:migrate -w backend",
     "db:seed": "npm run db:seed -w backend"
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.6"
   }
 }
