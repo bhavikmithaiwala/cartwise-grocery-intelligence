@@ -29,3 +29,5 @@ Roadmap milestones 2–50. No application features claimed complete. No push per
 8. User and hashed session models migrated. Dedicated test SQLite database; hash-only persistence, revocation and expiry verified (2 total tests pass), type checks pass.
 
 9. Registration/login/logout/me endpoints, scrypt password hashing, HttpOnly cookies, session rotation, origin/header protection and auth rate limiting implemented. 3 tests and type checks pass. Lint flagged required Express error-handler argument; configured unused underscore arguments and reran successfully.
+
+10. Shared authenticated user middleware and owner query helper implemented. Expired and forged cookie API tests pass. Type checks, lint and 3 tests pass.

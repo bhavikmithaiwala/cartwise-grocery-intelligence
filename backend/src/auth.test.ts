@@ -20,5 +20,8 @@ test('registration, login, cookie authentication and logout use persisted secure
     expect((await agent.post('/api/auth/login').set('X-CartWise-Request', '1').send(data)).status).toBe(200);
     expect((await agent.post('/api/auth/logout')).status).toBe(403);
     expect((await agent.post('/api/auth/logout').set('X-CartWise-Request', '1').set('Origin', 'https://other.example')).status).toBe(403);
+    await db.session.updateMany({ where: { user: { email } }, data: { expiresAt: new Date(0) } });
+    expect((await agent.get('/api/auth/me')).status).toBe(401);
+    expect((await request(app).get('/api/auth/me').set('Cookie', 'session=forged')).status).toBe(401);
   } finally { await db.user.deleteMany({ where: { email } }); }
 });

@@ -4,7 +4,8 @@ import { z } from 'zod';
 import { db } from '../db.js';
 import { HttpError } from '../errors.js';
 import { hashPassword, verifyPassword } from '../services/passwords.js';
-import { createSession, revokeSession, lookupSession } from '../services/sessions.js';
+import { createSession, revokeSession } from '../services/sessions.js';
+import { requireUser } from '../middleware/owner.js';
 export const auth = Router();
 const credentials = z.object({ email: z.email().max(254).transform(s => s.toLowerCase()), password: z.string().min(10).max(128) }).strict();
 const cookieOptions = { httpOnly: true, sameSite: 'strict' as const, secure: process.env.NODE_ENV === 'production', path: '/api' };
@@ -29,8 +30,7 @@ auth.post('/logout', async (req, res) => {
   if (req.cookies?.session) await revokeSession(req.cookies.session);
   res.clearCookie('session', cookieOptions).status(204).end();
 });
-auth.get('/me', async (req, res) => {
-  const session = req.cookies?.session && await lookupSession(req.cookies.session);
-  if (!session) throw new HttpError(401, 'UNAUTHENTICATED', 'Sign in to continue.');
-  res.json({ id: session.user.id, email: session.user.email });
+auth.get('/me', requireUser, async (req, res) => {
+  const user = await db.user.findUniqueOrThrow({ where: { id: req.userId }, select: { id: true, email: true } });
+  res.json(user);
 });
