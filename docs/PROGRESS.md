@@ -39,3 +39,5 @@ Roadmap milestones 2–50. No application features claimed complete. No push per
 13. Receipt, reviewed line and OCR job models migrated, with cascade ownership and indexes. State transition tests prevent direct OCR confirmation. 4 tests and type checks pass.
 
 14. Private random image storage, original-file SHA-256, content/MIME validation, 8 MB/16 MP limits, EXIF stripping and path containment implemented. Image security test, type checks and lint passed.
+
+15. Upload selection/drop UI with client file validation and real byte progress implemented. Frontend production build and lint passed; server upload route is next milestone.
