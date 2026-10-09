@@ -74,3 +74,5 @@ Lint flagged stripped hash variable; explicit discard fixed it and lint rerun pa
 30. Confirmed-only observations created in confirmation transaction with unique source line and cascade deletion. Mapped product family enforced. Test verifies normalized observation and idempotent single set. Migration, type checks and lint pass.
 
 31. Owner-scoped historical price API with confirmed-only sources, package details, date/merchant/unit filters and precise price strings implemented. Type checks and lint passed.
+
+32. Product search/date/unit selectors and price history chart/table with source links and honest insufficient-data states implemented. Frontend build and lint passed.
