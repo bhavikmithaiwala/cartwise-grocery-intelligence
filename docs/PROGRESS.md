@@ -52,3 +52,5 @@ Lint flagged stripped hash variable; explicit discard fixed it and lint rerun pa
 19. Item-row suggestions preserve raw text and heuristic confidence; totals/payment/discount rows excluded. No-line warning provided. Parser test, type checks and lint passed.
 
 20. OCR polling/review UI provides private image preview, editable headers/lines/quantities/categories/totals and explicit save/confirm controls. Build and lint passed. Persistence routes follow milestones 21–22.
+
+21. Strict integer-cent, decimal quantity, date and reconciliation validation implemented. Test initially caught malformed quantity reaching BigInt; guarded conversion fixed and rerun passed. Type checks and lint passed.
