@@ -22,6 +22,7 @@ model User {
   sessions Session[]
   receipts Receipt[]
   products CanonicalProduct[]
+  observations PriceObservation[]
 }
 
 model Session {
@@ -55,6 +56,7 @@ model Receipt {
   updatedAt DateTime @updatedAt
   lines ReceiptLine[]
   job OcrJob?
+  observations PriceObservation[]
   @@index([userId, purchaseDate, status])
   @@index([userId, fileSha256])
 }
@@ -75,6 +77,7 @@ model ReceiptLine {
   reviewedByUser Boolean @default(false)
   productId String?
   product CanonicalProduct? @relation(fields: [productId], references: [id], onDelete: SetNull)
+  observation PriceObservation?
   @@index([receiptId])
 }
 
@@ -85,6 +88,7 @@ model CanonicalProduct {
   name String
   unitFamily String
   lines ReceiptLine[]
+  observations PriceObservation[]
   @@unique([userId, name, unitFamily])
 }
 
@@ -97,4 +101,22 @@ model OcrJob {
   startedAt DateTime?
   finishedAt DateTime?
   safeErrorCode String?
+}
+
+model PriceObservation {
+  id String @id @default(cuid())
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  receiptId String
+  receipt Receipt @relation(fields: [receiptId], references: [id], onDelete: Cascade)
+  lineId String @unique
+  line ReceiptLine @relation(fields: [lineId], references: [id], onDelete: Cascade)
+  productId String
+  product CanonicalProduct @relation(fields: [productId], references: [id], onDelete: Cascade)
+  purchaseDate String
+  merchant String
+  normalizedQuantityDecimal String
+  normalizedUnit String
+  lineTotalCents Int
+  @@index([userId, productId, purchaseDate])
 }

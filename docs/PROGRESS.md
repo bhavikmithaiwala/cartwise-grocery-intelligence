@@ -70,3 +70,5 @@ Lint flagged stripped hash variable; explicit discard fixed it and lint rerun pa
 28. Product selection/creation and package-size controls added to review. Mapping is always explicit; unmapped lines excluded from price intelligence. Frontend build and lint passed.
 
 29. Decimal.js normalizes kg/g and L/ml exactly, includes package counts and separates mass/volume/each. Unit prices rounded half-up to 6 decimal cents per base unit; stored money remains integer cents. Unit tests, type checks and lint passed.
+
+30. Confirmed-only observations created in confirmation transaction with unique source line and cascade deletion. Mapped product family enforced. Test verifies normalized observation and idempotent single set. Migration, type checks and lint pass.
