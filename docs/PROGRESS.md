@@ -86,3 +86,5 @@ Lint flagged stripped hash variable; explicit discard fixed it and lint rerun pa
 36. Confirmed-only monthly analytics by local receipt date and integer-cent sums implemented. Category/merchant aggregates, separate tax and unallocated adjustments included. Month-boundary/isolation test, type checks and lint passed.
 
 37. Dashboard cards, category distribution and recent receipts connected to monthly API; all values reflect confirmed data with truthful empty states. Frontend build and lint passed.
+
+38. Six-month spending trend API and reports screen with category/merchant charts as accessible tables implemented; tax and unallocated adjustments visible. Type checks and lint passed.
