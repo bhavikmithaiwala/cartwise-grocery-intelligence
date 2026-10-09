@@ -8,6 +8,7 @@ import { storeImage, readImage, deleteImage, MAX_BYTES } from '../services/image
 import { enqueueOcr } from '../services/ocr.js';
 import { reviewSchema } from '../domain/money.js';
 import { saveReview, confirmReceipt } from '../services/review.js';
+import { duplicateWarnings } from '../services/duplicates.js';
 export const receipts = Router();
 receipts.use(requireUser);
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: MAX_BYTES, files: 1, fields: 0 } });
@@ -34,7 +35,7 @@ receipts.post('/upload', uploadLimit, (req, res, next) => upload.single('image')
     res.status(202).json({ id: receipt.id, status: receipt.status });
   } catch (err) { await deleteImage(stored.imagePath); throw err; }
 });
-receipts.get('/:id', async (req, res) => res.json(publicReceipt(await ownedReceipt(req.userId, req.params.id))));
+receipts.get('/:id', async (req, res) => res.json({ ...publicReceipt(await ownedReceipt(req.userId, req.params.id)), duplicates: await duplicateWarnings(req.userId, req.params.id) }));
 receipts.get('/:id/ocr-status', async (req, res) => {
   const receipt = await ownedReceipt(req.userId, req.params.id);
   res.json({ status: receipt.status, job: receipt.job });
@@ -49,6 +50,8 @@ receipts.patch('/:id/review', async (req, res) => {
   res.json(publicReceipt(await ownedReceipt(req.userId, req.params.id)));
 });
 receipts.post('/:id/confirm', async (req, res) => {
+  const pending = await ownedReceipt(req.userId, req.params.id);
+  if (pending.status !== 'confirmed' && (await duplicateWarnings(req.userId, req.params.id)).length && req.body?.duplicateAcknowledged !== true) throw new HttpError(409, 'POTENTIAL_DUPLICATE', 'Potential duplicate found. Review the source receipt and explicitly acknowledge before confirming a distinct purchase.');
   const receipt = await confirmReceipt(req.userId, req.params.id);
   const user = await db.user.findUniqueOrThrow({ where: { id: req.userId } });
   if (!user.retainImages && receipt.imagePath) {
