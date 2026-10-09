@@ -3,6 +3,7 @@ import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
 import { auth } from './controllers/auth.js';
 import { errors, HttpError } from './errors.js';
+import { receipts } from './controllers/receipts.js';
 
 export const app = express();
 app.disable('x-powered-by');
@@ -19,4 +20,5 @@ app.use('/api', (req, _res, next) => {
 });
 app.get('/api/health', (_req, res) => res.json({ status: 'ok', service: 'cartwise-api', currency: 'CAD' }));
 app.use('/api/auth', auth);
+app.use('/api/receipts', receipts);
 app.use(errors);

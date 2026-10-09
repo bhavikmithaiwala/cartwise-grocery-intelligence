@@ -1,0 +1,42 @@
+import { Router } from 'express';
+import multer from 'multer';
+import { rateLimit } from 'express-rate-limit';
+import { db } from '../db.js';
+import { requireUser, ownerWhere } from '../middleware/owner.js';
+import { HttpError } from '../errors.js';
+import { storeImage, readImage, deleteImage, MAX_BYTES } from '../services/images.js';
+export const receipts = Router();
+receipts.use(requireUser);
+const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: MAX_BYTES, files: 1, fields: 0 } });
+const uploadLimit = rateLimit({ windowMs: 15 * 60 * 1000, limit: 20, message: { code: 'RATE_LIMITED', message: 'Upload limit reached. Try again later.' } });
+export async function ownedReceipt(userId: string, id: string) {
+  const receipt = await db.receipt.findFirst({ where: ownerWhere(userId, id), include: { lines: true, job: true } });
+  if (!receipt) throw new HttpError(404, 'NOT_FOUND', 'Receipt not found.');
+  return receipt;
+}
+export function publicReceipt(receipt: Awaited<ReturnType<typeof ownedReceipt>>) {
+  const { imagePath, fileSha256: _hash, ...safe } = receipt;
+  void _hash;
+  return { ...safe, hasImage: !!imagePath, suggestions: JSON.parse(receipt.suggestions) };
+}
+receipts.post('/upload', uploadLimit, (req, res, next) => upload.single('image')(req, res, error => {
+  if (error) return next(new HttpError(error.code === 'LIMIT_FILE_SIZE' ? 413 : 400, 'UPLOAD_REJECTED', 'Upload one JPG, PNG or WebP image, at most 8 MB.'));
+  next();
+}), async (req, res) => {
+  if (!req.file) throw new HttpError(400, 'MISSING_IMAGE', 'Choose an image.');
+  const stored = await storeImage(req.file.buffer, req.file.mimetype);
+  try {
+    const receipt = await db.receipt.create({ data: { userId: req.userId, ...stored, status: 'processing', job: { create: {} } } });
+    res.status(202).json({ id: receipt.id, status: receipt.status });
+  } catch (err) { await deleteImage(stored.imagePath); throw err; }
+});
+receipts.get('/:id', async (req, res) => res.json(publicReceipt(await ownedReceipt(req.userId, req.params.id))));
+receipts.get('/:id/ocr-status', async (req, res) => {
+  const receipt = await ownedReceipt(req.userId, req.params.id);
+  res.json({ status: receipt.status, job: receipt.job });
+});
+receipts.get('/:id/image', async (req, res) => {
+  const receipt = await ownedReceipt(req.userId, req.params.id);
+  if (!receipt.imagePath) throw new HttpError(404, 'NOT_FOUND', 'Original image is no longer retained.');
+  res.set('Cache-Control', 'private, no-store').type('png').send(await readImage(receipt.imagePath));
+});

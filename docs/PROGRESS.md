@@ -41,3 +41,6 @@ Roadmap milestones 2–50. No application features claimed complete. No push per
 14. Private random image storage, original-file SHA-256, content/MIME validation, 8 MB/16 MP limits, EXIF stripping and path containment implemented. Image security test, type checks and lint passed.
 
 15. Upload selection/drop UI with client file validation and real byte progress implemented. Frontend production build and lint passed; server upload route is next milestone.
+
+16. Protected upload, receipt details, image and OCR status APIs implemented. Multipart upload test proves two-user isolation and forged-file rejection. Type checks and targeted integration test pass.
+Lint flagged stripped hash variable; explicit discard fixed it and lint rerun passed.
