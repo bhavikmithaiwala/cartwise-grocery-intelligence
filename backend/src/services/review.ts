@@ -8,8 +8,9 @@ export async function saveReview(userId: string, id: string, input: ReviewInput)
     const receipt = await tx.receipt.findFirst({ where: { id, userId } });
     if (!receipt) throw new HttpError(404, 'NOT_FOUND', 'Receipt not found.');
     if (!['needs_review', 'failed'].includes(receipt.status)) throw new HttpError(409, 'INVALID_STATE', 'Only pending or failed receipts can be reviewed.');
+    for (const line of input.lines) if (line.productId && !await tx.canonicalProduct.findFirst({where:{id:line.productId,userId}})) throw new HttpError(404,'NOT_FOUND','Product not found.');
     await tx.receiptLine.deleteMany({ where: { receiptId: id } });
-    const saved = await tx.receipt.update({ where: { id }, data: { rawMerchant: input.merchant, purchaseDate: input.purchaseDate, subtotalCents: input.subtotalCents, taxCents: input.taxCents, totalCents: input.totalCents, correctionNote: input.correctionNote, status: 'needs_review', lines: { create: input.lines.map(({ productId: _productId, ...line }) => { void _productId; return { ...line, reviewedByUser: true }; }) } } });
+    const saved = await tx.receipt.update({ where: { id }, data: { rawMerchant: input.merchant, purchaseDate: input.purchaseDate, subtotalCents: input.subtotalCents, taxCents: input.taxCents, totalCents: input.totalCents, correctionNote: input.correctionNote, status: 'needs_review', lines: { create: input.lines.map(line => ({ ...line, reviewedByUser: true })) } } });
     return saved;
   });
 }

@@ -12,7 +12,7 @@ export const dateSchema = z.string().regex(/^20\d{2}-\d{2}-\d{2}$/).refine(s => 
 }, 'Invalid calendar date');
 export const units = z.enum(['each','g','kg','ml','l']);
 export const categories = ['Produce','Dairy','Meat','Pantry','Bakery','Frozen','Household','Other'] as const;
-export const lineSchema = z.object({ rawText: z.string().max(500).default(''), description: z.string().trim().min(1).max(120), category: z.enum(categories), quantityDecimal: decimalSchema, quantityUnit: units, packageSizeDecimal: decimalSchema.nullish().transform(v => v ?? undefined), packageUnit: units.nullish().transform(v => v ?? undefined), lineTotalCents: centsSchema, parserConfidence: z.number().min(0).max(1).nullish().transform(v => v ?? undefined), productId: z.string().max(50).optional() });
+export const lineSchema = z.object({ rawText: z.string().max(500).default(''), description: z.string().trim().min(1).max(120), category: z.enum(categories), quantityDecimal: decimalSchema, quantityUnit: units, packageSizeDecimal: decimalSchema.nullish().transform(v => v ?? undefined), packageUnit: units.nullish().transform(v => v ?? undefined), lineTotalCents: centsSchema, parserConfidence: z.number().min(0).max(1).nullish().transform(v => v ?? undefined), productId: z.string().max(50).nullish().transform(v => v || undefined) });
 export const reviewSchema = z.object({ merchant: z.string().trim().min(1).max(120), purchaseDate: dateSchema, subtotalCents: centsSchema, taxCents: centsSchema, totalCents: centsSchema, lines: z.array(lineSchema).min(1).max(100), correctionNote: z.string().trim().max(500).default(''), duplicateAcknowledged: z.boolean().optional() }).strict();
 export type ReviewInput = z.infer<typeof reviewSchema>;
 export function validateTotals(input: ReviewInput) {
@@ -20,4 +20,5 @@ export function validateTotals(input: ReviewInput) {
   if (sum > 999_999_999 || input.subtotalCents + input.taxCents > 999_999_999) throw new HttpError(422, 'AMOUNT_OVERFLOW', 'Receipt amounts are too large.');
   if ((sum !== input.subtotalCents || input.subtotalCents + input.taxCents !== input.totalCents) && input.correctionNote.length < 10) throw new HttpError(422, 'TOTAL_DISCREPANCY', 'Totals differ. Correct them or provide an explanation of at least 10 characters for discounts or adjustments.');
 }
+
 

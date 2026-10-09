@@ -21,6 +21,7 @@ model User {
   createdAt DateTime @default(now())
   sessions Session[]
   receipts Receipt[]
+  products CanonicalProduct[]
 }
 
 model Session {
@@ -72,7 +73,19 @@ model ReceiptLine {
   lineTotalCents Int
   parserConfidence Float?
   reviewedByUser Boolean @default(false)
+  productId String?
+  product CanonicalProduct? @relation(fields: [productId], references: [id], onDelete: SetNull)
   @@index([receiptId])
+}
+
+model CanonicalProduct {
+  id String @id @default(cuid())
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name String
+  unitFamily String
+  lines ReceiptLine[]
+  @@unique([userId, name, unitFamily])
 }
 
 model OcrJob {

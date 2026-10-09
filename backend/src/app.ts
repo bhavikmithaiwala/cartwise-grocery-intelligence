@@ -7,6 +7,7 @@ import { receipts } from './controllers/receipts.js';
 import { requireUser } from './middleware/owner.js';
 import { db } from './db.js';
 import { categories } from './domain/money.js';
+import { products } from './controllers/products.js';
 
 export const app = express();
 app.disable('x-powered-by');
@@ -24,6 +25,7 @@ app.use('/api', (req, _res, next) => {
 app.get('/api/health', (_req, res) => res.json({ status: 'ok', service: 'cartwise-api', currency: 'CAD' }));
 app.use('/api/auth', auth);
 app.use('/api/receipts', receipts);
+app.use('/api/products', products);
 app.get('/api/categories', requireUser, (_req, res) => res.json(categories));
 app.get('/api/merchants', requireUser, async (req, res) => {
   const merchants = await db.receipt.findMany({ where: { userId:req.userId, rawMerchant:{not:''} }, select:{rawMerchant:true}, distinct:['rawMerchant'], orderBy:{rawMerchant:'asc'} });
