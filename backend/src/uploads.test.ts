@@ -16,6 +16,10 @@ test('uploads create private processing records and enforce ownership on details
     const detail = await agent.get(`/api/receipts/${response.body.id}`);
     expect(detail.body.status).toBe('processing');
     expect(detail.body.imagePath).toBeUndefined();
+    const duplicate=await agent.post('/api/receipts/upload').set('X-CartWise-Request','1').attach('image',png,{filename:'duplicate.png',contentType:'image/png'});
+    const secondDetail=await agent.get(`/api/receipts/${duplicate.body.id}`);
+    expect(secondDetail.body.duplicates).toContainEqual(expect.objectContaining({id:response.body.id,reason:'exact_file'}));
+    expect((await agent.post(`/api/receipts/${duplicate.body.id}/confirm`).set('X-CartWise-Request','1').send({})).status).toBe(409);
     expect((await agent.get(`/api/receipts/${response.body.id}/image`)).status).toBe(200);
     expect((await request(app).get(`/api/receipts/${response.body.id}`)).status).toBe(401);
     const other = request.agent(app);
