@@ -17,3 +17,5 @@ Roadmap milestones 2–50. No application features claimed complete. No push per
 2. React/TypeScript/Vite frontend scaffold: production build passed (Vite 8.3.4).
 
 3. Express API health endpoint implemented. Workspace type checks and health integration test passed (1 test).
+
+4. Prisma SQLite schema and migration applied; deploy/generate and type checks passed. Initial Windows schema-engine file-creation failure resolved by init-db script. Prisma 6.19 CLI advisories resolved using compatible 6.12 (npm audit: zero vulnerabilities).
