@@ -50,3 +50,5 @@ Lint flagged stripped hash variable; explicit discard fixed it and lint rerun pa
 18. Deterministic merchant/date/totals parser connected to OCR. Missing-field warnings, decimal comma and possible O/0 correction tests pass; type checks and lint pass.
 
 19. Item-row suggestions preserve raw text and heuristic confidence; totals/payment/discount rows excluded. No-line warning provided. Parser test, type checks and lint passed.
+
+20. OCR polling/review UI provides private image preview, editable headers/lines/quantities/categories/totals and explicit save/confirm controls. Build and lint passed. Persistence routes follow milestones 21–22.
