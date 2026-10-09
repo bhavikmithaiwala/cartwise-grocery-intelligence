@@ -90,3 +90,5 @@ Lint flagged stripped hash variable; explicit discard fixed it and lint rerun pa
 38. Six-month spending trend API and reports screen with category/merchant charts as accessible tables implemented; tax and unallocated adjustments visible. Type checks and lint passed.
 
 39. Inclusive from/to receipt search, date-order validation and UI controls added. Boundary/pagination integration test, type checks and lint passed.
+
+40. Safe confirmed CSV export with formula neutralization plus account JSON export, password-verified deletion and retention settings completed. Settings were required in specification but absent from numbered roadmap; included with data management/export milestone. CSV test, type checks and lint passed.
