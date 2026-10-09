@@ -98,3 +98,5 @@ Lint flagged stripped hash variable; explicit discard fixed it and lint rerun pa
 42. Discounted/taxed, malformed/blurry and unit-mismatch synthetic text/image fixtures added. Parser correction scenarios pass (2 tests), lint passes. Restricted shell tsx generation failed OS-user lookup; elevated rerun generated fixtures successfully.
 
 43. Parallel repeated confirmation test passes with one receipt/observation set; actual identical multipart uploads produce exact duplicate warning and block unacknowledged confirmation. 2 targeted tests and lint pass.
+
+44. Full two-account API lifecycle verifies isolated writes/reporting/products/budgets/exports, account deletion cascade and password checks. Oversized decoded image test added. 2 targeted integration/security tests, lint and type checks passed.
