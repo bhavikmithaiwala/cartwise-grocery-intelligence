@@ -2,6 +2,8 @@ import type { RequestHandler } from 'express';
 import { lookupSession } from '../services/sessions.js';
 import { HttpError } from '../errors.js';
 declare global {
+  // Express request augmentation uses the library's global namespace.
+  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Express {
     interface Request { userId: string }
   }

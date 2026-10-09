@@ -30,4 +30,6 @@ Roadmap milestones 2–50. No application features claimed complete. No push per
 
 9. Registration/login/logout/me endpoints, scrypt password hashing, HttpOnly cookies, session rotation, origin/header protection and auth rate limiting implemented. 3 tests and type checks pass. Lint flagged required Express error-handler argument; configured unused underscore arguments and reran successfully.
 
-10. Shared authenticated user middleware and owner query helper implemented. Expired and forged cookie API tests pass. Type checks, lint and 3 tests pass.
+10. Shared authenticated user middleware and owner query helper implemented. Expired and forged cookie API tests pass. Type checks and 3 tests pass. Lint completed after the commit and flagged Express global namespace augmentation; corrected in milestone 11. Earlier lint-pass wording was inaccurate.
+
+11. Accessible sign-in and registration forms integrated with the actual API. Type checks, lint, 3 tests and frontend production build passed. Milestone 10 lint issue corrected.
