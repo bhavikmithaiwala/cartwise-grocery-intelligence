@@ -19,3 +19,5 @@ Roadmap milestones 2–50. No application features claimed complete. No push per
 3. Express API health endpoint implemented. Workspace type checks and health integration test passed (1 test).
 
 4. Prisma SQLite schema and migration applied; deploy/generate and type checks passed. Initial Windows schema-engine file-creation failure resolved by init-db script. Prisma 6.19 CLI advisories resolved using compatible 6.12 (npm audit: zero vulnerabilities).
+
+5. Responsive shell, navigation and not-found routing implemented. Build initially exposed missing Vite CSS types; fixed, production build passed. Destination screens are explicitly unfinished until their roadmap features land.
