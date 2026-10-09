@@ -20,6 +20,7 @@ model User {
   retainImages Boolean @default(false)
   createdAt DateTime @default(now())
   sessions Session[]
+  receipts Receipt[]
 }
 
 model Session {
@@ -31,4 +32,56 @@ model Session {
   revokedAt DateTime?
   createdAt DateTime @default(now())
   @@index([userId, expiresAt])
+}
+
+model Receipt {
+  id String @id @default(cuid())
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rawMerchant String @default("")
+  purchaseDate String @default("")
+  currency String @default("CAD")
+  status String @default("needs_review")
+  subtotalCents Int @default(0)
+  taxCents Int @default(0)
+  totalCents Int @default(0)
+  fileSha256 String?
+  imagePath String?
+  suggestions String @default("{}")
+  correctionNote String @default("")
+  confirmedAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  lines ReceiptLine[]
+  job OcrJob?
+  @@index([userId, purchaseDate, status])
+  @@index([userId, fileSha256])
+}
+
+model ReceiptLine {
+  id String @id @default(cuid())
+  receiptId String
+  receipt Receipt @relation(fields: [receiptId], references: [id], onDelete: Cascade)
+  rawText String @default("")
+  description String
+  category String @default("Other")
+  quantityDecimal String @default("1")
+  quantityUnit String @default("each")
+  packageSizeDecimal String?
+  packageUnit String?
+  lineTotalCents Int
+  parserConfidence Float?
+  reviewedByUser Boolean @default(false)
+  @@index([receiptId])
+}
+
+model OcrJob {
+  id String @id @default(cuid())
+  receiptId String @unique
+  receipt Receipt @relation(fields: [receiptId], references: [id], onDelete: Cascade)
+  status String @default("queued")
+  attemptCount Int @default(0)
+  startedAt DateTime?
+  finishedAt DateTime?
+  safeErrorCode String?
 }

@@ -35,3 +35,5 @@ Roadmap milestones 2–50. No application features claimed complete. No push per
 11. Accessible sign-in and registration forms integrated with the actual API. Type checks, lint, 3 tests and frontend production build passed. Milestone 10 lint issue corrected.
 
 12. Account bootstrap, guarded routes and logout integrated. Both production builds and lint passed; backend auth isolation of session identity tested. Browser smoke pending milestone 46.
+
+13. Receipt, reviewed line and OCR job models migrated, with cascade ownership and indexes. State transition tests prevent direct OCR confirmation. 4 tests and type checks pass.
