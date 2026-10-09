@@ -1,2 +1,6 @@
 import { defineConfig } from 'vitest/config';
-export default defineConfig({ test: { setupFiles: ['./backend/test/setup.ts'], fileParallelism: false, env: { DATABASE_URL: 'file:./test.db' } } });
+import react from '@vitejs/plugin-react';
+export default defineConfig({test:{fileParallelism:false,projects:[
+  {test:{name:'backend',include:['backend/src/**/*.test.ts'],setupFiles:['./backend/test/setup.ts'],env:{DATABASE_URL:'file:./test.db'}}},
+  {plugins:[react()],test:{name:'frontend',include:['frontend/src/**/*.test.tsx'],environment:'jsdom'}},
+]}});

@@ -100,3 +100,5 @@ Lint flagged stripped hash variable; explicit discard fixed it and lint rerun pa
 43. Parallel repeated confirmation test passes with one receipt/observation set; actual identical multipart uploads produce exact duplicate warning and block unacknowledged confirmation. 2 targeted tests and lint pass.
 
 44. Full two-account API lifecycle verifies isolated writes/reporting/products/budgets/exports, account deletion cascade and password checks. Oversized decoded image test added. 2 targeted integration/security tests, lint and type checks passed.
+
+45. React interaction tests prove accessible sign-in error behavior, manual correction and integer-cent form submission. Initial jsdom run failed due backend node:sqlite setup; separate Vitest frontend/backend projects resolved. 2 React tests, lint and type checks passed.
