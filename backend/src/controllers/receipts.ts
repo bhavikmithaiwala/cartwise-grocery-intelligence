@@ -10,12 +10,13 @@ import { reviewSchema } from '../domain/money.js';
 import { saveReview, confirmReceipt } from '../services/review.js';
 import { duplicateWarnings } from '../services/duplicates.js';
 import { z } from 'zod';
+import { dateSchema } from '../domain/money.js';
 
 export const receipts = Router();
 receipts.use(requireUser);
 receipts.get('/', async (req, res) => {
-  const filters = z.object({ month: z.string().regex(/^20\d{2}-(0[1-9]|1[0-2])$/).optional(), merchant: z.string().max(120).optional(), status: z.enum(['processing','needs_review','confirmed','failed']).optional(), page: z.coerce.number().int().min(1).max(10000).default(1) }).parse(req.query);
-  const where = { userId: req.userId, ...(filters.month ? { purchaseDate: { startsWith: filters.month } } : {}), ...(filters.merchant ? { rawMerchant: { contains: filters.merchant } } : {}), ...(filters.status ? { status: filters.status } : {}) };
+  const filters = z.object({ month: z.string().regex(/^20\d{2}-(0[1-9]|1[0-2])$/).optional(), from:dateSchema.optional(),to:dateSchema.optional(),merchant: z.string().max(120).optional(), status: z.enum(['processing','needs_review','confirmed','failed']).optional(), page: z.coerce.number().int().min(1).max(10000).default(1) }).refine(q=>!q.from||!q.to||q.from<=q.to,'From date must precede to date').parse(req.query);
+  const where = { userId: req.userId, purchaseDate:{...(filters.month ? {startsWith: filters.month} : {}),gte:filters.from,lte:filters.to}, ...(filters.merchant ? { rawMerchant: { contains: filters.merchant } } : {}), ...(filters.status ? { status: filters.status } : {}) };
   const [items, total] = await db.$transaction([db.receipt.findMany({ where, select: { id:true, rawMerchant:true, purchaseDate:true, totalCents:true, status:true, createdAt:true }, orderBy: [{ purchaseDate:'desc' }, { id:'desc' }], skip:(filters.page-1)*20, take:20 }), db.receipt.count({where})]);
   res.json({ items, total, page:filters.page, pageSize:20 });
 });
