@@ -25,3 +25,5 @@ Roadmap milestones 2–50. No application features claimed complete. No push per
 6. Accessible reusable fields, notices, badges, cards and buttons added; frontend type check and lint passed.
 
 7. Typed relative API client and Vite proxy configured; both production builds and health test passed. Foundation checkpoint complete.
+
+8. User and hashed session models migrated. Dedicated test SQLite database; hash-only persistence, revocation and expiry verified (2 total tests pass), type checks pass.
