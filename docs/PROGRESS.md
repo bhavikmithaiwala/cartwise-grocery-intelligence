@@ -48,3 +48,5 @@ Lint flagged stripped hash variable; explicit discard fixed it and lint rerun pa
 17. Single-worker local Tesseract queue, 90-second recognition timeout, safe errors and interrupted-job recovery implemented. Actual local OCR smoke passed on generated fictional receipt (MILK and 7.50 recognized). Type checks and lint passed. First run downloads public English model into private storage/ocr-cache.
 
 18. Deterministic merchant/date/totals parser connected to OCR. Missing-field warnings, decimal comma and possible O/0 correction tests pass; type checks and lint pass.
+
+19. Item-row suggestions preserve raw text and heuristic confidence; totals/payment/discount rows excluded. No-line warning provided. Parser test, type checks and lint passed.

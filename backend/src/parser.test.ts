@@ -7,6 +7,9 @@ test('parser identifies totals separately and warns about missing or corrected d
   expect(parsed.totalCents).toBe(399);
   expect(parsed.taxCents).toBe(99);
   expect(parsed.warnings.join(' ')).toContain('corrected');
+  expect(parsed.lines).toHaveLength(1);
+  expect(parsed.lines[0].description).toBe('APPLES');
+  expect(parseReceipt('DEMO\nCOUPON -1.00\nTOTAL 2.00').lines).toHaveLength(0);
   expect(parseReceipt('').totalCents).toBeUndefined();
   expect(parseReceipt('AMBIGUOUS').purchaseDate).toBe('');
 });
