@@ -60,3 +60,5 @@ Lint flagged stripped hash variable; explicit discard fixed it and lint rerun pa
 23. Exact original-file hash and cautious merchant/date/total duplicate warnings implemented, with explicit acknowledgement before confirmation. No silent merge/deletion. Duplicate unit test, type checks and lint passed.
 
 24. Manual entry, draft persistence, private deletion and failed OCR retry (max 3 attempts) completed. Build caught Express DELETE parameter union; normalized parameter fixed and both builds passed. Lint and 10 tests passed. Receipt workflow checkpoint implemented; browser proof remains milestone 46.
+
+25. Owner-scoped paginated receipt listing with month/merchant/status validation, merchant catalog and standard categories implemented. Type checks, lint and upload isolation integration test passed. Merchant identity uses reviewed receipt text rather than a redundant merchant table.

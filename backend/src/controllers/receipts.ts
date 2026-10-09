@@ -9,8 +9,16 @@ import { enqueueOcr } from '../services/ocr.js';
 import { reviewSchema } from '../domain/money.js';
 import { saveReview, confirmReceipt } from '../services/review.js';
 import { duplicateWarnings } from '../services/duplicates.js';
+import { z } from 'zod';
+
 export const receipts = Router();
 receipts.use(requireUser);
+receipts.get('/', async (req, res) => {
+  const filters = z.object({ month: z.string().regex(/^20\d{2}-(0[1-9]|1[0-2])$/).optional(), merchant: z.string().max(120).optional(), status: z.enum(['processing','needs_review','confirmed','failed']).optional(), page: z.coerce.number().int().min(1).max(10000).default(1) }).parse(req.query);
+  const where = { userId: req.userId, ...(filters.month ? { purchaseDate: { startsWith: filters.month } } : {}), ...(filters.merchant ? { rawMerchant: { contains: filters.merchant } } : {}), ...(filters.status ? { status: filters.status } : {}) };
+  const [items, total] = await db.$transaction([db.receipt.findMany({ where, select: { id:true, rawMerchant:true, purchaseDate:true, totalCents:true, status:true, createdAt:true }, orderBy: [{ purchaseDate:'desc' }, { id:'desc' }], skip:(filters.page-1)*20, take:20 }), db.receipt.count({where})]);
+  res.json({ items, total, page:filters.page, pageSize:20 });
+});
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: MAX_BYTES, files: 1, fields: 0 } });
 const uploadLimit = rateLimit({ windowMs: 15 * 60 * 1000, limit: 20, message: { code: 'RATE_LIMITED', message: 'Upload limit reached. Try again later.' } });
 export async function ownedReceipt(userId: string, id: string) {
@@ -80,4 +88,5 @@ receipts.delete('/:id', async (req, res) => {
   await db.receipt.delete({ where: { id: receipt.id } });
   res.status(204).end();
 });
+
 
