@@ -76,3 +76,5 @@ Lint flagged stripped hash variable; explicit discard fixed it and lint rerun pa
 31. Owner-scoped historical price API with confirmed-only sources, package details, date/merchant/unit filters and precise price strings implemented. Type checks and lint passed.
 
 32. Product search/date/unit selectors and price history chart/table with source links and honest insufficient-data states implemented. Frontend build and lint passed.
+
+33. Store comparison groups by product and normalized unit, with lowest recorded value/count/date/source implemented. Unit grouping test passed. Frontend syntax error during integration corrected; type checks and lint rerun passed.
