@@ -11,3 +11,11 @@ test('strict integer cents, positive decimal quantities and valid calendar dates
   expect(() => validateTotals({ ...input, totalCents:101 })).toThrow();
   expect(() => validateTotals({ ...input, totalCents:101, correctionNote:'Reviewed rounding adjustment' })).not.toThrow();
 });
+test('money rejects overflow and preserves decimal edge cases',()=>{
+  expect(parseMoney('9999999.99')).toBe(999999999);
+  expect(()=>parseMoney('10000000.00')).toThrow();
+  expect(decimalSchema.parse('0.000001')).toBe('0.000001');
+  expect(()=>decimalSchema.parse('0.000000')).toThrow();
+  expect(()=>decimalSchema.parse('0.0000001')).toThrow();
+  expect(parseMoney('0.10')+parseMoney('0.20')).toBe(30);
+});

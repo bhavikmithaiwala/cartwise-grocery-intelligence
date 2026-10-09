@@ -92,3 +92,5 @@ Lint flagged stripped hash variable; explicit discard fixed it and lint rerun pa
 39. Inclusive from/to receipt search, date-order validation and UI controls added. Boundary/pagination integration test, type checks and lint passed.
 
 40. Safe confirmed CSV export with formula neutralization plus account JSON export, password-verified deletion and retention settings completed. Settings were required in specification but absent from numbered roadmap; included with data management/export milestone. CSV test, type checks and lint passed.
+
+41. Expanded money/quantity normalization tests cover overflow, tiny decimals, invalid precision, half-up rounding and incomplete packages. 4 targeted tests and lint passed.
