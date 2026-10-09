@@ -108,3 +108,5 @@ Lint flagged stripped hash variable; explicit discard fixed it and lint rerun pa
 47. GitHub Actions installs dependencies, migrates SQLite, runs lint/type checks/unit+integration+React tests/builds and Chromium E2E with artifact capture. Local equivalent quality gate passed: 17 test files, 21 tests, both builds. Hosted Actions run not yet demonstrated.
 
 48. Architecture, security/privacy/retention decisions, monetary/tax/quantity rules, actual endpoint contracts and evidence-based interview notes documented. Documentation checked against implemented routes; lint passed.
+
+49. Recruiter README, real screenshots, reproducible commands, ninety-second demo and deployment notes prepared; limitations and verified evidence disclosed. Screenshot/doc references validated and both builds passed. Seed/start release verification follows milestone 50.
