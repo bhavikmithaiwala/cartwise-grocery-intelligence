@@ -3,6 +3,7 @@ import { db } from '../db.js';
 import { readImage } from './images.js';
 import { mkdir } from 'node:fs/promises';
 import { resolve } from 'node:path';
+import { parseReceipt } from '../domain/parser.js';
 const queue: string[] = [];
 let running = false;
 export function enqueueOcr(id: string) {
@@ -28,7 +29,7 @@ async function drain() {
         let timeout: ReturnType<typeof setTimeout>;
         const result = await Promise.race([recognition, new Promise<never>((_, reject) => { timeout = setTimeout(() => reject(new Error('timeout')), 90_000); })]).finally(() => clearTimeout(timeout));
         await db.$transaction(async tx => {
-          const changed = await tx.receipt.updateMany({ where: { id, status: 'processing' }, data: { status: 'needs_review', suggestions: JSON.stringify({ rawText: result.data.text.slice(0, 30_000), confidence: result.data.confidence, warnings: ['OCR suggestions must be reviewed before confirmation.'] }) } });
+          const changed = await tx.receipt.updateMany({ where: { id, status: 'processing' }, data: { status: 'needs_review', suggestions: JSON.stringify({ ...parseReceipt(result.data.text), confidence: result.data.confidence }) } });
           if (changed.count) await tx.ocrJob.update({ where: { receiptId: id }, data: { status: 'finished', finishedAt: new Date() } });
         });
       } catch {
