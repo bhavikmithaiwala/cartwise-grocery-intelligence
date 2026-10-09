@@ -66,3 +66,5 @@ Lint flagged stripped hash variable; explicit discard fixed it and lint rerun pa
 26. Searchable receipt history with month/status/merchant filters, stable pagination and details links completed. Build and lint passed.
 
 27. Owner-scoped canonical product model/API and reviewed line mapping persistence added. No automatic fuzzy mapping. Regression test caught nullable product field; normalized and rerun passed. Migration, type checks and lint passed.
+
+28. Product selection/creation and package-size controls added to review. Mapping is always explicit; unmapped lines excluded from price intelligence. Frontend build and lint passed.
