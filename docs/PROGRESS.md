@@ -4,15 +4,17 @@ Baseline: `d74ca3b` (one existing commit). Reference files fully read. Existing 
 
 ## Current milestone
 
-1. Monorepo workspace and reference documentation established. Workspace manifests validated.
+All 50 implementation milestones completed. Baseline `d74ca3b` preserved: 50 new commits, 51 total after this release commit. Last completed commit is HEAD, `chore: verify builds seed data and deployment readiness`. The implementation includes all specified screens, actual local OCR, reviewed confirmation, historical price intelligence, reporting and privacy controls.
 
 ## Verification
 
-Node 22.13.1 and npm 10.9.2 available. No application tests exist yet.
+Node 22.13.1 and npm 10.9.2. Fresh `npm ci`, all six SQLite migrations and repeated fictional seeds passed. Final lint/type checks, 21 tests across 17 files and both production builds passed. Actual local Tesseract smoke passed. Final isolated Chromium E2E passed (1 test, 9.9 seconds). Compiled SPA/API HTTP smoke proved demo login, four nonduplicated seeded receipts, four historical observations per product and current-month reporting. `npm audit` reported zero vulnerabilities.
 
 ## Remaining
 
-Roadmap milestones 2–50. No application features claimed complete. No push performed.
+No remaining implementation blockers. Existing origin was fetched and verified as an ancestor of local HEAD; the final fast-forward push follows this release commit. Verify publication with `git rev-parse HEAD` and `git rev-parse origin/main`; the delivery report records the actual push result. Hosted CI and deployment are not claimed as verified. Limits: imperfect OCR, English/CAD only, single-process queue, immutable confirmed receipt correction via delete/re-entry, bounded history results, no live retailer feeds.
+
+1. Monorepo foundation and reference files committed after workspace manifest validation (`eb8f57c`).
 
 2. React/TypeScript/Vite frontend scaffold: production build passed (Vite 8.3.4).
 
@@ -51,7 +53,7 @@ Lint flagged stripped hash variable; explicit discard fixed it and lint rerun pa
 
 19. Item-row suggestions preserve raw text and heuristic confidence; totals/payment/discount rows excluded. No-line warning provided. Parser test, type checks and lint passed.
 
-20. OCR polling/review UI provides private image preview, editable headers/lines/quantities/categories/totals and explicit save/confirm controls. Build and lint passed. Persistence routes follow milestones 21�22.
+20. OCR polling/review UI provides private image preview, editable headers/lines/quantities/categories/totals and explicit save/confirm controls. Build and lint passed. Persistence routes follow milestones 2122.
 
 21. Strict integer-cent, decimal quantity, date and reconciliation validation implemented. Test initially caught malformed quantity reaching BigInt; guarded conversion fixed and rerun passed. Type checks and lint passed.
 
@@ -110,3 +112,5 @@ Lint flagged stripped hash variable; explicit discard fixed it and lint rerun pa
 48. Architecture, security/privacy/retention decisions, monetary/tax/quantity rules, actual endpoint contracts and evidence-based interview notes documented. Documentation checked against implemented routes; lint passed.
 
 49. Recruiter README, real screenshots, reproducible commands, ninety-second demo and deployment notes prepared; limitations and verified evidence disclosed. Screenshot/doc references validated and both builds passed. Seed/start release verification follows milestone 50.
+
+50. Release setup now preserves environment files, runs fresh migrations and idempotent fictional seeds. Added compiled SPA serving, environment loading, local/remote hosting instructions and seed HTTP smoke. Corrected decimal typing, validated package semantics for all reviewed lines, exposed actual OCR stage progress and removed unreachable scaffold code. Formatted implementation for readability. All final checks above passed. One browser-start attempt failed because concurrent Prisma generation overlapped unit tests and locked a Windows DLL; sequential rerun passed. Progress ledger mixed Windows encoding was normalized to UTF-8. No real receipts, SQLite files, private storage, secrets or build output are staged.

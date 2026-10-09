@@ -1,10 +1,111 @@
-import { useEffect, useState } from 'react';
-import { api, post } from './api';
-import { Button, Field, Notice } from './ui';
-import type { ReviewLine } from './Review';
-interface Product { id:string; name:string; unitFamily:string }
-export function ProductMapping({item,onChange,disabled}:{item:ReviewLine;onChange:(patch:Partial<ReviewLine>)=>void;disabled:boolean}) {
-  const [products,setProducts]=useState<Product[]>([]); const [name,setName]=useState(''); const [error,setError]=useState('');
-  useEffect(()=>{api<Product[]>('/products').then(setProducts).catch(err=>setError(err.message));},[]);
-  return <div className="card"><label className="field">Verified product identity<select disabled={disabled} value={item.productId ?? ''} onChange={e=>onChange({productId:e.target.value || undefined})}><option value="">No mapping · exclude from price history</option>{products.map(p=><option key={p.id} value={p.id}>{p.name} ({p.unitFamily})</option>)}</select></label>{!disabled && <div className="row"><Field label="Create product name" value={name} onChange={e=>setName(e.target.value)}/><Button type="button" className="secondary" disabled={!name.trim()} onClick={async()=>{try {const unit=item.packageUnit || item.quantityUnit;const p=await post<Product>('/products',{name,unitFamily:['g','kg'].includes(unit)?'mass':['ml','l'].includes(unit)?'volume':'each'});setProducts(prev=>[...prev,p]);onChange({productId:p.id});setName('');setError('');}catch(err){setError((err as Error).message);}}}>Create & map product</Button></div>}<div className="row"><Field label="Package size (optional)" value={item.packageSizeDecimal ?? ''} disabled={disabled} onChange={e=>onChange({packageSizeDecimal:e.target.value || undefined})}/><label className="field">Package unit<select disabled={disabled} value={item.packageUnit ?? ''} onChange={e=>onChange({packageUnit:e.target.value || undefined})}><option value="">Not specified</option>{['g','kg','ml','l','each'].map(u=><option key={u}>{u}</option>)}</select></label></div><p className="muted">Explicitly map equivalent products. For 2 packs of 500 g, quantity is 2 each and package size is 500 g.</p>{error && <Notice error>{error}</Notice>}</div>;
+import { useEffect, useState } from "react";
+import { api, post } from "./api";
+import { Button, Field, Notice } from "./ui";
+import type { ReviewLine } from "./Review";
+interface Product {
+  id: string;
+  name: string;
+  unitFamily: string;
+}
+export function ProductMapping({
+  item,
+  onChange,
+  disabled,
+}: {
+  item: ReviewLine;
+  onChange: (patch: Partial<ReviewLine>) => void;
+  disabled: boolean;
+}) {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [name, setName] = useState("");
+  const [error, setError] = useState("");
+  useEffect(() => {
+    api<Product[]>("/products")
+      .then(setProducts)
+      .catch((err) => setError(err.message));
+  }, []);
+  return (
+    <div className="card">
+      <label className="field">
+        Verified product identity
+        <select
+          disabled={disabled}
+          value={item.productId ?? ""}
+          onChange={(e) => onChange({ productId: e.target.value || undefined })}
+        >
+          <option value="">No mapping · exclude from price history</option>
+          {products.map((p) => (
+            <option key={p.id} value={p.id}>
+              {p.name} ({p.unitFamily})
+            </option>
+          ))}
+        </select>
+      </label>
+      {!disabled && (
+        <div className="row">
+          <Field
+            label="Create product name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+          <Button
+            type="button"
+            className="secondary"
+            disabled={!name.trim()}
+            onClick={async () => {
+              try {
+                const unit = item.packageUnit || item.quantityUnit;
+                const p = await post<Product>("/products", {
+                  name,
+                  unitFamily: ["g", "kg"].includes(unit)
+                    ? "mass"
+                    : ["ml", "l"].includes(unit)
+                      ? "volume"
+                      : "each",
+                });
+                setProducts((prev) => [...prev, p]);
+                onChange({ productId: p.id });
+                setName("");
+                setError("");
+              } catch (err) {
+                setError((err as Error).message);
+              }
+            }}
+          >
+            Create & map product
+          </Button>
+        </div>
+      )}
+      <div className="row">
+        <Field
+          label="Package size (optional)"
+          value={item.packageSizeDecimal ?? ""}
+          disabled={disabled}
+          onChange={(e) =>
+            onChange({ packageSizeDecimal: e.target.value || undefined })
+          }
+        />
+        <label className="field">
+          Package unit
+          <select
+            disabled={disabled}
+            value={item.packageUnit ?? ""}
+            onChange={(e) =>
+              onChange({ packageUnit: e.target.value || undefined })
+            }
+          >
+            <option value="">Not specified</option>
+            {["g", "kg", "ml", "l", "each"].map((u) => (
+              <option key={u}>{u}</option>
+            ))}
+          </select>
+        </label>
+      </div>
+      <p className="muted">
+        Explicitly map equivalent products. For 2 packs of 500 g, quantity is 2
+        each and package size is 500 g.
+      </p>
+      {error && <Notice error>{error}</Notice>}
+    </div>
+  );
 }

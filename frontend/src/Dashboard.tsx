@@ -1,11 +1,125 @@
-import {useEffect,useState} from 'react';
-import {Link} from 'react-router-dom';
-import {api} from './api';
-import {localMonth} from './Budgets';
-import {Field,Notice,Empty,money} from './ui';
-export interface Overview {month:string;totalCents:number;taxCents:number;lineTotalCents:number;unallocatedAdjustmentCents:number;receiptCount:number;budgetLimitCents:number;budgetRemainingCents:number;categories:Record<string,number>;merchants:Record<string,number>;recent:{id:string;merchant:string;purchaseDate:string;totalCents:number}[]}
-export function DashboardScreen(){
-  const [month,setMonth]=useState(localMonth());const [data,setData]=useState<Overview>();const [error,setError]=useState('');
-  useEffect(()=>{api<Overview>(`/reports/overview?month=${month}`).then(setData).catch(err=>setError(err.message));},[month]);
-  return <><div className="row"><div><p className="eyebrow">A LITTLE CLARITY FOR EVERY CART</p><h1>Your grocery overview</h1><p>Turn everyday purchases into a clearer picture.</p></div><Link className="button" to="/upload">+ Add receipt</Link></div><Field label="Reporting month" type="month" value={month} required onChange={e=>setMonth(e.target.value)}/>{error && <Notice error>{error}</Notice>}{!data?<Notice>Loading verified spending…</Notice>:<><div className="grid">{[['Confirmed spending',money(data.totalCents)],['Category budget remaining',data.budgetLimitCents?money(data.budgetRemainingCents):'Not set'],['Verified receipts',String(data.receiptCount)],['Receipt tax',money(data.taxCents)]].map(([label,value])=><section className="card" key={label}><p className="eyebrow">{label}</p><div className="stat">{value}</div><p className="muted">{month} · CAD</p></section>)}</div><div className="grid"><section className="card"><h2>Where your groceries go</h2>{Object.entries(data.categories).map(([category,cents])=><div key={category}><div className="row"><p>{category}</p><strong>{money(cents)}</strong></div><div className="chart-bar" style={{width:`${cents/Math.max(data.lineTotalCents,1)*100}%`}}/></div>)}{!data.lineTotalCents&&<p>No confirmed category spending yet.</p>}<p className="muted">Category totals exclude receipt-level tax and adjustments.</p></section><section className="card"><h2>Recent verified receipts</h2>{data.recent.length?data.recent.map(r=><p key={r.id}><Link to={`/receipts/${r.id}`}>{r.merchant}</Link> · {r.purchaseDate} · <strong>{money(r.totalCents)}</strong></p>):<Empty title="Start your grocery notebook"><Link to="/receipts/new">Enter your first receipt</Link></Empty>}<Link to="/receipts">View receipt history →</Link></section></div><Notice>Price intelligence comes from your confirmed receipts. <Link to="/prices">Explore historical prices →</Link></Notice></>}</>;
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { api } from "./api";
+import { localMonth } from "./Budgets";
+import { Field, Notice, Empty, money } from "./ui";
+export interface Overview {
+  month: string;
+  totalCents: number;
+  taxCents: number;
+  lineTotalCents: number;
+  unallocatedAdjustmentCents: number;
+  receiptCount: number;
+  budgetLimitCents: number;
+  budgetRemainingCents: number;
+  categories: Record<string, number>;
+  merchants: Record<string, number>;
+  recent: {
+    id: string;
+    merchant: string;
+    purchaseDate: string;
+    totalCents: number;
+  }[];
+}
+export function DashboardScreen() {
+  const [month, setMonth] = useState(localMonth());
+  const [data, setData] = useState<Overview>();
+  const [error, setError] = useState("");
+  useEffect(() => {
+    api<Overview>(`/reports/overview?month=${month}`)
+      .then(setData)
+      .catch((err) => setError(err.message));
+  }, [month]);
+  return (
+    <>
+      <div className="row">
+        <div>
+          <p className="eyebrow">A LITTLE CLARITY FOR EVERY CART</p>
+          <h1>Your grocery overview</h1>
+          <p>Turn everyday purchases into a clearer picture.</p>
+        </div>
+        <Link className="button" to="/upload">
+          + Add receipt
+        </Link>
+      </div>
+      <Field
+        label="Reporting month"
+        type="month"
+        value={month}
+        required
+        onChange={(e) => setMonth(e.target.value)}
+      />
+      {error && <Notice error>{error}</Notice>}
+      {!data ? (
+        <Notice>Loading verified spending…</Notice>
+      ) : (
+        <>
+          <div className="grid">
+            {[
+              ["Confirmed spending", money(data.totalCents)],
+              [
+                "Category budget remaining",
+                data.budgetLimitCents
+                  ? money(data.budgetRemainingCents)
+                  : "Not set",
+              ],
+              ["Verified receipts", String(data.receiptCount)],
+              ["Receipt tax", money(data.taxCents)],
+            ].map(([label, value]) => (
+              <section className="card" key={label}>
+                <p className="eyebrow">{label}</p>
+                <div className="stat">{value}</div>
+                <p className="muted">{month} · CAD</p>
+              </section>
+            ))}
+          </div>
+          <div className="grid">
+            <section className="card">
+              <h2>Where your groceries go</h2>
+              {Object.entries(data.categories).map(([category, cents]) => (
+                <div key={category}>
+                  <div className="row">
+                    <p>{category}</p>
+                    <strong>{money(cents)}</strong>
+                  </div>
+                  <div
+                    className="chart-bar"
+                    style={{
+                      width: `${(cents / Math.max(data.lineTotalCents, 1)) * 100}%`,
+                    }}
+                  />
+                </div>
+              ))}
+              {!data.lineTotalCents && (
+                <p>No confirmed category spending yet.</p>
+              )}
+              <p className="muted">
+                Category totals exclude receipt-level tax and adjustments.
+              </p>
+            </section>
+            <section className="card">
+              <h2>Recent verified receipts</h2>
+              {data.recent.length ? (
+                data.recent.map((r) => (
+                  <p key={r.id}>
+                    <Link to={`/receipts/${r.id}`}>{r.merchant}</Link> ·{" "}
+                    {r.purchaseDate} · <strong>{money(r.totalCents)}</strong>
+                  </p>
+                ))
+              ) : (
+                <Empty title="Start your grocery notebook">
+                  <Link to="/receipts/new">Enter your first receipt</Link>
+                </Empty>
+              )}
+              <Link to="/receipts">View receipt history →</Link>
+            </section>
+          </div>
+          <Notice>
+            Price intelligence comes from your confirmed receipts.{" "}
+            <Link to="/prices">Explore historical prices →</Link>
+          </Notice>
+        </>
+      )}
+    </>
+  );
 }

@@ -1,6 +1,6 @@
 # Local production build and hosting considerations
 
-No hosted deployment is claimed. This document describes a single-host configuration. Final seed/start verification is tracked in `PROGRESS.md`.
+No hosted deployment is claimed. This document describes a single-host configuration. Fresh migrations, repeated seed runs and compiled SPA/API HTTP smoke passed locally; final evidence is tracked in `PROGRESS.md`.
 
 1. Install Node 22, run `npm ci`, and copy `backend/.env.example` to `backend/.env`.
 2. Set `DATABASE_URL`, `PORT` and `APP_ORIGIN` for the environment. Keep SQLite and private image/cache storage on durable private disk. Never place either under the frontend static directory.

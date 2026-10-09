@@ -20,11 +20,11 @@ npm run db:seed
 npm run dev
 ```
 
-Open **http://127.0.0.1:5173**. API: http://127.0.0.1:3001/api/health. Use the same hostname throughout to preserve cookie/origin checks. `APP_ORIGIN` must match the browser URL. The seed/release setup is finalized in roadmap milestone 50; check [the progress ledger](docs/PROGRESS.md) for the latest verified state.
+Open **http://127.0.0.1:5173**. API: http://127.0.0.1:3001/api/health. Use the same hostname throughout to preserve cookie/origin checks. `APP_ORIGIN` must match the browser URL. After `npm ci`, `npm run setup` combines environment initialization, migrations and fictional seed data while preserving existing configuration.
 
 Fictional demo account: `demo@cartwise.test` / `CartWise-demo-2026!`. Register your own local account if preferred. Seeded dates use the current local month, and all stores/products are clearly fictional. Demo credentials are public fixtures, not production secrets.
 
-Run services separately with `npm run dev -w backend` and `npm run dev -w frontend`. Development data is in `backend/prisma/dev.db`; image/OCR cache storage is private under `backend/storage/`. Files are gitignored.
+Run services separately with `npm run dev -w backend` and `npm run dev -w frontend`. Development data is in `backend/prisma/dev.db`; image/OCR cache storage is private under `backend/storage/`. Files are gitignored. For the compiled local application, run `npm run build` then `npm start` and open http://127.0.0.1:3001. Configure `APP_ORIGIN=http://127.0.0.1:3001` for this mode. HTTPS and secure cookies for remote hosting are described in [deployment notes](docs/DEPLOYMENT.md).
 
 ## Working features
 

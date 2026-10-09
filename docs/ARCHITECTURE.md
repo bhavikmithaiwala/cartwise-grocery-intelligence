@@ -38,7 +38,7 @@ Receipt totals include tax. Category budgets sum reviewed line totals and exclud
 
 Tesseract.js performs actual local English OCR. First use downloads the public English language model; it is cached under private `storage/ocr-cache`. The parser tests use synthetic text for determinism. `npm run test:ocr` regenerates a fictional legible image and checks recognizable product/total text. This is a smoke check, not a measured accuracy benchmark.
 
-One queue drains one worker at a time. Recognition has a 90-second timeout, safe error codes and at most three retry attempts. Worker initialization can depend on the language download. On startup interrupted processing records become failed, ready for user retry/correction. There is no distributed queue. Restarting can interrupt OCR. Suggestions, confidence values and parsed quantities are heuristic and unverified. OCR never imports confirmed purchases.
+One queue drains one worker at a time. Recognition has a 90-second timeout, safe error codes and at most three retry attempts. Live engine progress is shown per processing stage, rather than inventing an overall completion estimate. Worker initialization can depend on the language download. On startup interrupted processing records become failed, ready for user retry/correction. There is no distributed queue. Restarting can interrupt OCR. Suggestions, confidence values and parsed quantities are heuristic and unverified. OCR never imports confirmed purchases.
 
 ## Privacy and access controls
 

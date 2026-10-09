@@ -1,10 +1,12 @@
-import { createWorker } from 'tesseract.js';
-import { db } from '../db.js';
-import { readImage } from './images.js';
-import { mkdir } from 'node:fs/promises';
-import { resolve } from 'node:path';
-import { parseReceipt } from '../domain/parser.js';
+import { createWorker } from "tesseract.js";
+import { db } from "../db.js";
+import { readImage } from "./images.js";
+import { mkdir } from "node:fs/promises";
+import { resolve } from "node:path";
+import { parseReceipt } from "../domain/parser.js";
 const queue: string[] = [];
+const progress = new Map<string, { stage: string; percent: number }>();
+export const ocrProgress = (id: string) => progress.get(id) ?? null;
 let running = false;
 export function enqueueOcr(id: string) {
   if (!queue.includes(id)) queue.push(id);
@@ -16,33 +18,113 @@ async function drain() {
   try {
     while (queue.length) {
       const id = queue.shift()!;
-      const receipt = await db.receipt.findUnique({ where: { id }, include: { job: true } });
-      if (!receipt || receipt.status !== 'processing' || !receipt.imagePath || !receipt.job) continue;
+      const receipt = await db.receipt.findUnique({
+        where: { id },
+        include: { job: true },
+      });
+      if (
+        !receipt ||
+        receipt.status !== "processing" ||
+        !receipt.imagePath ||
+        !receipt.job
+      )
+        continue;
       let worker: Awaited<ReturnType<typeof createWorker>> | undefined;
       try {
-        await db.ocrJob.update({ where: { receiptId: id }, data: { status: 'running', startedAt: new Date(), attemptCount: { increment: 1 }, safeErrorCode: null } });
-        const cachePath = resolve('storage/ocr-cache');
+        await db.ocrJob.update({
+          where: { receiptId: id },
+          data: {
+            status: "running",
+            startedAt: new Date(),
+            attemptCount: { increment: 1 },
+            safeErrorCode: null,
+          },
+        });
+        const cachePath = resolve("storage/ocr-cache");
         await mkdir(cachePath, { recursive: true });
-        worker = await createWorker('eng', 1, { cachePath, logger: () => {}, errorHandler: () => {} });
+        worker = await createWorker("eng", 1, {
+          cachePath,
+          logger: (event) => {
+            const stage =
+              event.status === "recognizing text"
+                ? "Recognizing text"
+                : "Preparing local OCR model";
+            if (typeof event.progress === "number")
+              progress.set(id, {
+                stage,
+                percent: Math.max(
+                  0,
+                  Math.min(100, Math.round(event.progress * 100)),
+                ),
+              });
+          },
+          errorHandler: () => {},
+        });
         const image = await readImage(receipt.imagePath);
         const recognition = worker.recognize(image);
         let timeout: ReturnType<typeof setTimeout>;
-        const result = await Promise.race([recognition, new Promise<never>((_, reject) => { timeout = setTimeout(() => reject(new Error('timeout')), 90_000); })]).finally(() => clearTimeout(timeout));
-        await db.$transaction(async tx => {
-          const changed = await tx.receipt.updateMany({ where: { id, status: 'processing' }, data: { status: 'needs_review', suggestions: JSON.stringify({ ...parseReceipt(result.data.text), confidence: result.data.confidence }) } });
-          if (changed.count) await tx.ocrJob.update({ where: { receiptId: id }, data: { status: 'finished', finishedAt: new Date() } });
+        const result = await Promise.race([
+          recognition,
+          new Promise<never>((_, reject) => {
+            timeout = setTimeout(() => reject(new Error("timeout")), 90_000);
+          }),
+        ]).finally(() => clearTimeout(timeout));
+        await db.$transaction(async (tx) => {
+          const changed = await tx.receipt.updateMany({
+            where: { id, status: "processing" },
+            data: {
+              status: "needs_review",
+              suggestions: JSON.stringify({
+                ...parseReceipt(result.data.text),
+                confidence: result.data.confidence,
+              }),
+            },
+          });
+          if (changed.count)
+            await tx.ocrJob.update({
+              where: { receiptId: id },
+              data: { status: "finished", finishedAt: new Date() },
+            });
         });
       } catch {
-        await db.receipt.updateMany({ where: { id, status: 'processing' }, data: { status: 'failed' } });
-        await db.ocrJob.updateMany({ where: { receiptId: id }, data: { status: 'failed', finishedAt: new Date(), safeErrorCode: 'OCR_FAILED' } });
-      } finally { await worker?.terminate().catch(() => {}); }
+        await db.receipt.updateMany({
+          where: { id, status: "processing" },
+          data: { status: "failed" },
+        });
+        await db.ocrJob.updateMany({
+          where: { receiptId: id },
+          data: {
+            status: "failed",
+            finishedAt: new Date(),
+            safeErrorCode: "OCR_FAILED",
+          },
+        });
+      } finally {
+        progress.delete(id);
+        await worker?.terminate().catch(() => {});
+      }
     }
-  } finally { running = false; }
+  } finally {
+    running = false;
+  }
 }
 export async function recoverInterruptedOcr() {
-  const interrupted = await db.receipt.findMany({ where: { status: 'processing' }, select: { id: true } });
+  const interrupted = await db.receipt.findMany({
+    where: { status: "processing" },
+    select: { id: true },
+  });
   await db.$transaction([
-    db.receipt.updateMany({ where: { status: 'processing' }, data: { status: 'failed' } }),
-    db.ocrJob.updateMany({ where: { receiptId: { in: interrupted.map(r => r.id) } }, data: { status: 'failed', safeErrorCode: 'OCR_INTERRUPTED', finishedAt: new Date() } }),
+    db.receipt.updateMany({
+      where: { status: "processing" },
+      data: { status: "failed" },
+    }),
+    db.ocrJob.updateMany({
+      where: { receiptId: { in: interrupted.map((r) => r.id) } },
+      data: {
+        status: "failed",
+        safeErrorCode: "OCR_INTERRUPTED",
+        finishedAt: new Date(),
+      },
+    }),
   ]);
 }
