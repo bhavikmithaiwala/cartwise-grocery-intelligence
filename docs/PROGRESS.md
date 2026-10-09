@@ -78,3 +78,5 @@ Lint flagged stripped hash variable; explicit discard fixed it and lint rerun pa
 32. Product search/date/unit selectors and price history chart/table with source links and honest insufficient-data states implemented. Frontend build and lint passed.
 
 33. Store comparison groups by product and normalized unit, with lowest recorded value/count/date/source implemented. Unit grouping test passed. Frontend syntax error during integration corrected; type checks and lint rerun passed.
+
+34. Monthly category budget schema with owner/category/month uniqueness and validated integer-cent endpoints migrated. Actuals query confirmed reviewed lines only. Migration, type checks and lint passed.

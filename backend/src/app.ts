@@ -9,6 +9,7 @@ import { db } from './db.js';
 import { categories } from './domain/money.js';
 import { products } from './controllers/products.js';
 import { prices } from './controllers/prices.js';
+import { budgets } from './controllers/budgets.js';
 
 export const app = express();
 app.disable('x-powered-by');
@@ -28,6 +29,7 @@ app.use('/api/auth', auth);
 app.use('/api/receipts', receipts);
 app.use('/api/products', products);
 app.use('/api/prices', prices);
+app.use('/api/budgets', budgets);
 app.get('/api/categories', requireUser, (_req, res) => res.json(categories));
 app.get('/api/merchants', requireUser, async (req, res) => {
   const merchants = await db.receipt.findMany({ where: { userId:req.userId, rawMerchant:{not:''} }, select:{rawMerchant:true}, distinct:['rawMerchant'], orderBy:{rawMerchant:'asc'} });

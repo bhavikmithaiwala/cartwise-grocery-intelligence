@@ -23,6 +23,7 @@ model User {
   receipts Receipt[]
   products CanonicalProduct[]
   observations PriceObservation[]
+  budgets MonthlyBudget[]
 }
 
 model Session {
@@ -119,4 +120,14 @@ model PriceObservation {
   normalizedUnit String
   lineTotalCents Int
   @@index([userId, productId, purchaseDate])
+}
+
+model MonthlyBudget {
+  id String @id @default(cuid())
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category String
+  month String
+  limitCents Int
+  @@unique([userId, category, month])
 }
