@@ -5,6 +5,7 @@ import { db } from '../db.js';
 import { requireUser, ownerWhere } from '../middleware/owner.js';
 import { HttpError } from '../errors.js';
 import { storeImage, readImage, deleteImage, MAX_BYTES } from '../services/images.js';
+import { enqueueOcr } from '../services/ocr.js';
 export const receipts = Router();
 receipts.use(requireUser);
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: MAX_BYTES, files: 1, fields: 0 } });
@@ -27,6 +28,7 @@ receipts.post('/upload', uploadLimit, (req, res, next) => upload.single('image')
   const stored = await storeImage(req.file.buffer, req.file.mimetype);
   try {
     const receipt = await db.receipt.create({ data: { userId: req.userId, ...stored, status: 'processing', job: { create: {} } } });
+    if (process.env.NODE_ENV !== 'test') enqueueOcr(receipt.id);
     res.status(202).json({ id: receipt.id, status: receipt.status });
   } catch (err) { await deleteImage(stored.imagePath); throw err; }
 });

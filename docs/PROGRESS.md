@@ -44,3 +44,5 @@ Roadmap milestones 2–50. No application features claimed complete. No push per
 
 16. Protected upload, receipt details, image and OCR status APIs implemented. Multipart upload test proves two-user isolation and forged-file rejection. Type checks and targeted integration test pass.
 Lint flagged stripped hash variable; explicit discard fixed it and lint rerun passed.
+
+17. Single-worker local Tesseract queue, 90-second recognition timeout, safe errors and interrupted-job recovery implemented. Actual local OCR smoke passed on generated fictional receipt (MILK and 7.50 recognized). Type checks and lint passed. First run downloads public English model into private storage/ocr-cache.
